@@ -32,6 +32,11 @@
 	VERSION: 0.2
 	MOAI VERSION: v1.0 r3
 
+	UPDATED: 6-18-12
+	MOAI VERSION: v1.2
+
+	- Was not properly setting the rect for textbox in setRect()
+
 	NOTES
 	- MOAITextBox does not seem to handle setVisible properly, so we blank out the
 	  string when hiding, and restore it when showing.
@@ -104,7 +109,7 @@ function _M.Text:setRect(width, align)
 	if (nil ~= self._textStyle) then
 		local scale = self._textStyle:getSize()
 		self._height = scale + scale / 6
-		self._textBox:setRect(0, self._height, self._width, 0)
+		self._textBox:setRect(0, -self._height, self._width, 0)
 	end
 end
 
