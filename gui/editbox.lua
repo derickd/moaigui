@@ -198,6 +198,7 @@ end
 
 function _M.EditBox:_EditBoxEvents()
 	self.EVENT_EDIT_BOX_TEXT_ACCEPTED = "EventEditBoxTextAccepted"
+	self.EVENT_INPUT = "EventInput"
 end
 
 function _M.EditBox:init(gui)
@@ -210,6 +211,7 @@ function _M.EditBox:init(gui)
 	self._BACKGROUND_INDEX = self._WIDGET_SPECIFIC_OBJECTS_INDEX
 	self.BACKGROUND_IMAGES = self._WIDGET_SPECIFIC_IMAGES
 
+	self._padding = "  "
 	self._passwordChar = nil
 	self._cursorPos = 1
 	self._internalText = ""

@@ -43,6 +43,8 @@ require "gui/support/class"
 
 local utilities = require "gui/support/utilities"
 local resources = require "gui/support/resources"
+local textstyles = require "gui/textstyles"
+
 local fonts = require "gui/fonts"
 
 _M.LayoutParser = class()
@@ -51,14 +53,17 @@ function _M.LayoutParser:_handleTextAlign(win, data)
 	local horzText = data.textHorzAlign
 	local vertText = data.textVertAlign
 
-	if (nil ~= horzText and nil ~= vertText) then
+	if (nil ~= horzText) then
 		local horz, vert
 		if ("left" == string.lower(horzText)) then
 			horz = win.TEXT_ALIGN_LEFT
+		elseif ("center" == string.lower(horzText)) then
+			horz = win.TEXT_ALIGN_CENTER
 		elseif ("right" == string.lower(horzText)) then
 			horz = win.TEXT_ALIGN_RIGHT
 		end
 
+	if (nil ~= vertText) then
 		if ("top" == string.lower(vertText)) then
 			vert = win.TEXT_ALIGN_TOP
 		elseif ("bottom" == string.lower(vertText)) then
@@ -106,6 +111,10 @@ function _M.LayoutParser:_baseFromData(w, data)
 		w:setInputPassThrough(true)
 	end
 
+	if (nil ~= data.textstyle) then
+		w:setTextStyle(textstyles.get(data.textstyle))
+	end
+
 	return base
 end
 
@@ -125,6 +134,37 @@ function _M.LayoutParser:_windowFromData(name, data)
 	end
 
 	w:setBackgroundImage(resources.getPath(bg), bgColor[1], bgColor[2], bgColor[3], bgColor[4])
+
+	return w
+end
+
+
+function _M.LayoutParser:_lineGraphFromData(name, data)
+	local w = self._factory:create("line graph")
+	self:_handleTextAlign(w, data)
+	self:_baseFromData(w, data)
+	w:setName(name)
+
+	if (nil ~= data.scale) then
+		w:setAxisLength(w, unpack(data.axislength))
+	end
+
+	return w
+end
+
+function _M.LayoutParser:_popUpFromData(name, data)
+	local w = self._factory:create("pop up")
+	self:_handleTextAlign(w, data)
+	self:_baseFromData(w, data)
+	w:setName(name)
+
+	if (nil ~= data.buttons) then
+		--print( table.show(data.buttons, "popupbuttons") )
+		
+		w:setButtonList(data.buttons)
+--	else
+--		print("No root button?")
+	end
 
 	return w
 end
@@ -245,6 +285,36 @@ function _M.LayoutParser:_radioButtonFromData(name, data)
 		w:setGroup(data.radioButtonGroup)
 	end
 
+	if (nil ~= data.images) then
+		if (nil ~= data.images.normal) then
+			for i = 1, #data.images.normal do
+				local t = self:_calcImageTable(data.images.normal[i], i)
+				w:setNormalImage(unpack(t))
+			end
+		end
+
+		if (nil ~= data.images.hover) then
+			for i = 1, #data.images.hover do
+				local t = self:_calcImageTable(data.images.hover[i], i)
+				w:setHoverImage(unpack(t))
+			end
+		end
+
+		if (nil ~= data.images.pushed) then
+			for i = 1, #data.images.pushed do
+				local t = self:_calcImageTable(data.images.pushed[i], i)
+				w:setPushedImage(unpack(t))
+			end
+		end
+
+		if (nil ~= data.images.selected) then
+			for i = 1, #data.images.selected do
+				local t = self:_calcImageTable(data.images.selected[i], i)
+				w:setSelectedImage(unpack(t))
+			end
+		end
+	end
+
 	return w
 end
 
@@ -291,7 +361,11 @@ function _M.LayoutParser:_sliderFromData(name, data)
 	if (nil ~= data.step) then
 		w:setStep(step)
 	end
-	
+
+	if (nil ~= data.snap) then
+		w:setSnap(data.snap)
+	end
+
 	if (nil ~= data.valueLoc) then
 		local loc = data.valueLoc
 		if ("top" == loc) then
@@ -413,6 +487,8 @@ function _M.LayoutParser:_registerWidgetCreateFuncs()
 	self:registerWidgetCreateFunc("progress bar", self._progressBarFromData)
 	self:registerWidgetCreateFunc("text box", self._textBoxFromData)
 	self:registerWidgetCreateFunc("widget list", self._widgetListFromData)
+	self:registerWidgetCreateFunc("line graph", self._lineGraphFromData)
+	self:registerWidgetCreateFunc("pop up", self._popUpFromData)
 end
 
 function _M.LayoutParser:_handleIncludes(children)
@@ -488,6 +564,29 @@ function _M.LayoutParser:_parseWidgetData(fileName, prefix, parent, name, data, 
 		end
 	end
 end
+
+function _M.LayoutParser:createFromData(data, prefix, parent, params)
+	local roots = {}
+	local widgets = {}
+	local groups = {}
+
+	if (nil == data) then
+		return roots, widgets, groups
+	end
+
+	if (nil == prefix) then prefix = "" end
+	if (nil == params) then params = {} end
+	-- fudge
+	local fileName = "[data]"
+
+	for k, v in pairs(data) do
+		table.insert(roots, prefix .. k)
+		self:_parseWidgetData(fileName, prefix, parent, k, v, widgets, nil, groups)
+	end
+
+	return roots, widgets, groups
+end
+
 
 function _M.LayoutParser:createFromLayout(fileName, prefix, parent, params)
 	local roots = {}

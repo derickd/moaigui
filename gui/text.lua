@@ -108,10 +108,23 @@ function _M.Text:setRect(width, align)
 
 	if (nil ~= self._textStyle) then
 		local scale = self._textStyle:getSize()
+		local lines = self:getLines()
 		self._height = scale + scale / 6
-		self._textBox:setRect(0, -self._height, self._width, 0)
+		self._textBox:setRect(0, self._height * lines, self._width, 0)
+		--self._textBox:setRect(0, -self._height, self._width, 0)
 	end
 end
+
+function _M.Text:getLines()
+	local count = 1
+	self._string:gsub(".", function(c)
+    	if c == '\n' then
+    		count = count + 1
+    	end
+	end)
+	return count
+end
+
 
 function _M.Text:setAlignment(align)
 	self._align = align
