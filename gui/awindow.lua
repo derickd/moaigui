@@ -65,6 +65,7 @@ require "gui/support/class"
 
 local text = require "gui/text"
 local imagelist = require "gui/imagelist"
+local awidgetevent = require "gui/awidgetevent"
 
 local EventHandler = class()
 _M.AWindow = class()
@@ -214,6 +215,10 @@ function _M.AWindow:_setParent(parent)
 
 	self:_linkProp(parent._rootProp, self._rootProp)
 	self:_setPriority(self._parent:getPriority() + #self._parent._props + 1 + 1)
+end
+
+function _M.AWindow:_addText()
+	return text.Text(self)
 end
 
 function _M.AWindow:_setTextRect()

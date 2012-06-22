@@ -97,12 +97,13 @@ function _M.Thumb:_onHandleMouseMove(event)
 		x = self:x()
 		y = 0
 
-		if (x > self._maxValue - self:width()) then
-			x = self._maxValue - self:width()
+		-- why -1 ? it caused troubles with currValue (could be calculated right)
+		if (x > self._maxValue - self:width()/2 - 0.1 ) then
+			x = self._maxValue - self:width()/2 - 0.1
 		end
 		
-		if (x < self._minValue) then
-			x = self._minValue
+		if (x < self._minValue - self:width()/2 ) then
+			x = self._minValue - self:width()/2
 		end
 
 		if (mouseX < self._parent:fullX()) then
@@ -153,6 +154,29 @@ function _M.Thumb:_onHandleMouseMove(event)
 	end
 
 	return false
+end
+
+function _M.Thumb:updatePos(points, selected, max)
+
+	local divide = points - 1
+	local newPos
+
+	if(max == nil) then
+		newPos = ((self._maxValue - self._minValue) / divide ) * (selected) - (self:width() / 2)
+	elseif(max == true) then
+		newPos = self._maxValue - (self:width() / 2)
+	else
+		newPos = self._minValue - (self:width() / 2)
+	end
+
+	if (self.ORIENTATION_HORZ == self._orientation) then	
+			self:setPos(newPos, 0)
+	else 
+			self:setPos(0, newPos)
+	end
+
+	local e = self:_createThumbPosChangedEvent()
+	self:_handleEvent(self.EVENT_THUMB_POS_CHANGED, e)	
 end
 
 function _M.Thumb:setOrientation(orientation)

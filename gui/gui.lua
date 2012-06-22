@@ -84,7 +84,9 @@ function _M.GUI:_createGUILayer(width, height)
 	viewport:setSize(width, height)
 	viewport:setScale(width, height)
 	viewport:setOffset(-1, 1)
+
 	layer:setViewport(viewport)
+
 
 	local partition = MOAIPartition.new()
 	layer:setPartition(partition)
@@ -92,7 +94,9 @@ function _M.GUI:_createGUILayer(width, height)
 	self._partition = partition
 	self._layer = layer
 	self._viewport = viewport
+  
 end
+
 
 function _M.GUI:_registerHitObject(widget, prop)
 	self._propToWindow[prop] = widget
@@ -493,6 +497,24 @@ function _M.GUI:createWindow(...)
 	return w
 end
 
+
+function _M.GUI:createLineGraph(...)
+	local w = self._factory:create("line graph", ...)
+
+	self:_addWindow(w)
+
+	return w
+end
+
+--Custom element
+function _M.GUI:createPopUp(...)
+	local w = self._factory:create("pop up", ...)
+
+	self:_addWindow(w)
+
+	return w
+end
+
 function _M.GUI:createLabel(...)
 	local w = self._factory:create("label", ...)
 
@@ -631,6 +653,11 @@ function _M.GUI:setCurrTextStyle(name)
 
 	self._currTextStyle = name
 	self._factory:setCurrTextStyle(style)
+end
+
+
+function _M.GUI:loadLayoutfromData(data, prefix, parent, params)
+	return self._layoutParser:createFromData(data, prefix, parent, params)
 end
 
 function _M.GUI:loadLayout(fileName, prefix, parent, params)

@@ -55,6 +55,15 @@ function _M.Slider:_setTextRect()
 	self._text:setRect(width)
 end
 
+function _M.Slider:setValueVisibility(visible)
+	if visible == true then
+		self._text:show()
+	elseif visible == false then
+		--print("slider hidden")
+		self._text:hide()
+	end
+end
+
 function _M.Slider:_setTextPos()
 	local x, y
 
@@ -111,6 +120,30 @@ function _M.Slider:_onSetDim()
 	end
 end
 
+function _M.Slider:_handleThumbClick(event)
+	--print("Clicked")
+	print(table.show(event))
+end
+
+function _M.Slider:_handleThumbUp(event)
+
+	-- get the number of points
+	local points = self._maxValue - self._minValue + 1
+
+	-- TODO: don't expect slider to start at one
+	local selected = self._currValue - 1
+
+	-- snap!
+	if(self._currValue == self._maxValue) then
+		self._thumb:updatePos(points, nil, true)
+	elseif(self._currValue == self._minValue) then
+		self._thumb:updatePos(points, nil, false)
+	else
+		self._thumb:updatePos(points, selected, nil)
+	end
+
+end
+
 function _M.Slider:_handleThumbPosChanged(event)
 	local thumbValue = self._thumb:getCurrValue()
 
@@ -134,16 +167,26 @@ function _M.Slider:setMaxValue(value)
 	self._maxValue = value
 
 	self:setCurrValue(self._currValue)
+	self:_handleThumbUp()
 end
 
 function _M.Slider:getMaxValue()
 	return self._maxValue
 end
 
+function _M.Slider:setSnap(value)
+	self._snap = value
+	if(self._snap) then
+		self._thumb:registerEventHandler(self._thumb.EVENT_MOUSE_UP, self, "_handleThumbUp")
+		self._thumb:registerEventHandler(self.EVENT_MOUSE_CLICK, self, "_handleThumbClick")
+	end
+end
+
 function _M.Slider:setMinValue(value)
 	self._minValue = value
 
 	self:setCurrValue(self._currValue)
+	self:_handleThumbUp()
 end
 
 function _M.Slider:getMinValue()
@@ -255,6 +298,7 @@ function _M.Slider:init(gui)
 	self.VALUE_DISPLAY_LEFT = 2
 	self.VALUE_DISPLAY_RIGHT = 3
 
+	self._snap = false
 	self._maxValue = 100
 	self._minValue = 0
 	self._currValue = 0
