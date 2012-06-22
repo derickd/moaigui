@@ -50,8 +50,8 @@ screen_current = screen_requested or 1
 last_text_entered = ""
 screen_changing = true
 
-screen_height = 960 
-screen_width = 640
+screen_height = 480
+screen_width = 320
 
 --[[
     layout_handlers is a special table which layouts can use to add 
