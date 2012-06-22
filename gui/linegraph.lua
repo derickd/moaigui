@@ -146,6 +146,15 @@ function _M.LineGraph:_addGraphText(x, y, text)
 
 function _M.LineGraph:draw(table_graphdata)
 
+  -- copied from lua-users.org
+  function round(val, decimal)
+    if (decimal) then
+      return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+    else
+      return math.floor(val+0.5)
+    end
+  end
+
 	--table_graphdata = table_graphdata
 	local function drawGraph()
 	  --Drawing baselines
