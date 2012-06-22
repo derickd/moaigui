@@ -62,7 +62,7 @@ function _M.LayoutParser:_handleTextAlign(win, data)
 		elseif ("right" == string.lower(horzText)) then
 			horz = win.TEXT_ALIGN_RIGHT
 		end
-
+    end
 	if (nil ~= vertText) then
 		if ("top" == string.lower(vertText)) then
 			vert = win.TEXT_ALIGN_TOP
