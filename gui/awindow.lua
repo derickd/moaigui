@@ -283,6 +283,12 @@ end
 function _M.AWindow:setEnabled(flag)
 	self._enabled = flag
 	
+    if (true == flag) then
+	    self:_setCurrImages(self._BUTTON_INDEX, self.NORMAL_IMAGES)
+    else
+	    self:_setCurrImages(self._BUTTON_INDEX, self.DISABLED_IMAGES)
+    end
+
 	for i, v in ipairs(self._children) do
 		v:setEnabled(flag)
 	end
