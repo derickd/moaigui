@@ -49,14 +49,24 @@ end
 
 function _M.AButton:_inputEnters(event)
 	self._over = true
-	self:_setCurrImages(self._BUTTON_INDEX, self.HOVER_IMAGES)
+
+    if (true == self._enabled) then
+	    self:_setCurrImages(self._BUTTON_INDEX, self.HOVER_IMAGES)
+    else
+	    self:_setCurrImages(self._BUTTON_INDEX, self.DISABLED_IMAGES)
+    end
 
 	return false
 end
 
 function _M.AButton:_inputLeaves(event)
 	self._over = false
-	self:_setCurrImages(self._BUTTON_INDEX, self.NORMAL_IMAGES)
+    
+    if (true == self._enabled) then
+	    self:_setCurrImages(self._BUTTON_INDEX, self.NORMAL_IMAGES)
+    else
+	    self:_setCurrImages(self._BUTTON_INDEX, self.DISABLED_IMAGES)
+    end
 
 	return false
 end
@@ -64,7 +74,11 @@ end
 function _M.AButton:_inputUp(event)
 	self._pushed = false
 	if (false == self._over) then
-		self:_setCurrImages(self._BUTTON_INDEX, self.NORMAL_IMAGES)
+        if (true == self._enabled) then
+		    self:_setCurrImages(self._BUTTON_INDEX, self.NORMAL_IMAGES)
+        else
+		    self:_setCurrImages(self._BUTTON_INDEX, self.DISABLED_IMAGES)
+        end
 	else
 		self:_setCurrImages(self._BUTTON_INDEX, self.HOVER_IMAGES)
 	end
@@ -74,7 +88,12 @@ end
 
 function _M.AButton:_inputDown(event)
 	self._pushed = true
-	self:_setCurrImages(self._BUTTON_INDEX, self.PUSHED_IMAGES)
+
+    if (false == self._enabled) then
+	    self:_setCurrImages(self._BUTTON_INDEX, self.DISABLED_IMAGES)
+    else
+	    self:_setCurrImages(self._BUTTON_INDEX, self.PUSHED_IMAGES)
+    end
 
 	return false
 end

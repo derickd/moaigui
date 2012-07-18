@@ -397,6 +397,7 @@ function registerScreenWidgets(widgets)
       ----print("reg button widget : ", i .. " = ", v)
       local_button = v.window
       local_button:registerEventHandler(local_button.EVENT_BUTTON_CLICK, nil, button_handler)
+      local_button:registerEventHandler(local_button.EVENT_DISABLE, nil, button_disable_handler)
     end
     if string.find(i, "_window") then
       ----print("reg window widget : ", i .. " = ", v)
@@ -446,6 +447,7 @@ function unregisterScreenWidgets(widgets)
       ----print("unreg widget : ", i .. " = ", v)
       local_button = v.window
       local_button:unregisterEventHandler(local_button.EVENT_BUTTON_CLICK)
+      local_button:unregisterEventHandler(local_button.EVENT_DISABLE)
     end
     if string.find(i, "_window") then
       ----print("unreg widget : ", i .. " = ", v)
@@ -519,6 +521,7 @@ mainThread:run(
           layout_exit_handler = nil 
           window_handler = nil 
           button_handler = nil 
+          button_disable_handler = nil
           touch_handler = nil  
           slider_handler = nil 
           radio_button_handler = nil 
@@ -548,6 +551,7 @@ mainThread:run(
           layout_exit_handler    = nil or t.layout_exit_handler
           window_handler         = nil or t.window_handler
           button_handler         = nil or t.button_handler
+          button_disable_handler = nil or t.button_disable_handler
           touch_handler          = nil or t.touch_handler
           slider_handler         = nil or t.slider_handler
           radio_button_handler   = nil or t.radio_button_handler
