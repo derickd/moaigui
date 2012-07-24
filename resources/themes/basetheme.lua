@@ -3,16 +3,16 @@ data = {
 	textstyles = {
 		default = {
 			font = "arial-rounded.TTF",
-			size = 14,
+			size = 13,
 		},
 		listselected = {
 			font = "arial-rounded.TTF",
-			size = 14,
+			size = 13,
 			color = {0, 0, 0, 1}
 		},
 		listunselected = {
 			font = "arial-rounded.TTF",
-			size = 14,
+			size = 13,
 			color = {1, 1, 1, 1}
 		}
 	},
@@ -28,13 +28,13 @@ data = {
 		normal = "check box.png",
 		hover = "check box.png",
 		pushed = "check box.png",
-		selected = "check box select.png",
+		selected = "check box select 32.png",
 	},
 	radiobutton = {
-		normal = "radio button.png",
-		hover = "radio button.png",
-		pushed = "radio button.png",
-		selected = "radio button select.png",
+		normal = "radio button 16.png",
+		hover = "radio button 16.png",
+		pushed = "radio button select 16 offset.png",
+		selected = "radio button select 16 offset.png",
 	},
 	editbox = {
 		normal = "edit box center.png",
