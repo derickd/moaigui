@@ -28,13 +28,13 @@ data = {
 		normal = "check box.png",
 		hover = "check box.png",
 		pushed = "check box.png",
-		selected = "check box select 32.png",
+		selected = "check box select.png",
 	},
 	radiobutton = {
-		normal = "radio button 16.png",
-		hover = "radio button 16.png",
-		pushed = "radio button select 16 offset.png",
-		selected = "radio button select 16 offset.png",
+		normal = "radio button.png",
+		hover = "radio button.png",
+		pushed = "radio button select.png",
+		selected = "radio button select.png",
 	},
 	editbox = {
 		normal = "edit box center.png",
