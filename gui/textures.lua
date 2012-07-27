@@ -49,6 +49,7 @@ function _M.get(fileName, group)
 	local tex = groupTextures[fileName]
 	if (nil == tex) then
 		tex = MOAITexture.new()
+		tex:setFilter ( MOAITexture.GL_LINEAR_MIPMAP_LINEAR )
 		tex:load(fileName)
 
 		groupTextures[fileName] = tex
