@@ -77,20 +77,26 @@ function _M.GUI:_calcRelValue(x, y)
 	return x, y
 end
 
-function _M.GUI:_createGUILayer(width, height)
+function _M.GUI:_createGUILayer(width, height, screenWidth, screenHeight)
 	local layer = MOAILayer.new()
 
 	local viewport = MOAIViewport.new()
-	viewport:setSize(width, height)
+	if ( screenWidth and screenHeight ) then
+		local shiftX = ( screenWidth - width ) / 2
+		local shiftY = ( screenHeight - height ) / 2
+		viewport:setSize ( shiftX, shiftY, shiftX + width, shiftY + height )
+	else
+		viewport:setSize(width, height)
+	end
 	viewport:setScale(width, height)
 	viewport:setOffset(-1, 1)
-
+	
 	layer:setViewport(viewport)
-
-
+	
 	local partition = MOAIPartition.new()
 	layer:setPartition(partition)
-	
+
+	self._partitionOrder = {}
 	self._partition = partition
 	self._layer = layer
 	self._viewport = viewport
@@ -115,6 +121,7 @@ function _M.GUI:_createProp(priority)
 	prop:setLoc(0, 0)
 	prop:setScl(1, 1)
 
+	table.insert ( self:partitionOrder ( ), prop )
 	self:partition():insertProp(prop)
 
 	return prop
@@ -128,6 +135,7 @@ end
 
 function _M.GUI:_destroyProp(prop)
 	prop:setDeck(nil)
+	array.removeElement ( self:partitionOrder ( ), prop )
 	self:partition():removeProp(prop)
 end
 
@@ -261,8 +269,24 @@ function _M.GUI:partition()
 	return self._partition
 end
 
+function _M.GUI:partitionOrder()
+	return self._partitionOrder
+end
+
 function _M.GUI:layer()
 	return self._layer
+end
+
+function _M.GUI:_orderedProps ( props )
+	local orderedProps = {}
+	for i = #self:partitionOrder ( ), 1, -1 do
+		for k, v in pairs ( props ) do
+			if ( v == self:partitionOrder ( ) [ i ] ) then
+				table.insert ( orderedProps, v )
+			end
+		end
+	end
+	return orderedProps
 end
 
 function _M.GUI:_calcInputOver(x, y)
@@ -271,8 +295,10 @@ function _M.GUI:_calcInputOver(x, y)
 	local props = {self._partition:propListForPoint(inputX, inputY, 0, MOAILayer.SORT_PRIORITY_DESCENDING)}
 	if (nil == props or #props == 0) then return nil end
 
-	for i, v in ipairs(props) do
-		local win = self._propToWindow[v]
+	local orderedProps = self:_orderedProps ( props )
+	
+	for i, v in ipairs(orderedProps) do
+		local win = self._propToWindow [ v ]
 		if (nil ~= win) then
 			if (true == win:getVisible()) then
 				return win
@@ -702,7 +728,7 @@ function _M.GUI:shutdown()
 	end
 end
 
-function _M.GUI:init(width, height)
+function _M.GUI:init(width, height, screenWidth, screenHeight)
 	self._width = width
 	self._height = height
 
@@ -727,7 +753,7 @@ function _M.GUI:init(width, height)
 	self._factory = factory.Factory(self)
 	self._layoutParser = layoutparser.LayoutParser(self._factory)
 
-	self:_createGUILayer(width, height)
+	self:_createGUILayer(width, height, screenWidth, screenHeight)
 end
 
 return _M

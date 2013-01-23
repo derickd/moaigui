@@ -587,6 +587,26 @@ function _M.LayoutParser:createFromData(data, prefix, parent, params)
 	return roots, widgets, groups
 end
 
+function _M.LayoutParser:createSortedData ( data )
+	local sortedData = {}
+	local element = nil
+
+	for k, v in pairs ( data ) do
+		element = v
+		element._name = k
+		table.insert ( sortedData, element )
+	end
+
+	function dataSort ( a, b )
+		local aOrder = a.order or 0
+		local bOrder = b.order or 0
+		return aOrder < bOrder
+	end
+
+	table.sort ( sortedData, dataSort )
+
+	return sortedData
+end
 
 function _M.LayoutParser:createFromLayout(fileName, prefix, parent, params)
 	local roots = {}
@@ -606,9 +626,11 @@ function _M.LayoutParser:createFromLayout(fileName, prefix, parent, params)
 		-- data.create(params)
 	-- end
 
-	for k, v in pairs(data) do
-		table.insert(roots, prefix .. k)
-		self:_parseWidgetData(fileName, prefix, parent, k, v, widgets, nil, groups)
+	local sortedData = self:createSortedData ( data )
+
+	for k, v in pairs(sortedData) do
+		table.insert(roots, prefix .. v._name)
+		self:_parseWidgetData(fileName, prefix, parent, v._name, v, widgets, nil, groups)
 	end
 
 	return roots, widgets, groups
