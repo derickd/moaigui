@@ -37,8 +37,9 @@ local _M = {}
 
 function _M.pathJoin(...)
 	local s = ""
+	local args = arg or {...}
 
-	for i, v in ipairs(arg) do
+	for i, v in ipairs(args) do
 		s = s .. v .. "/" --MOAIFileSystem.getDirSeparator()
 	end
 
