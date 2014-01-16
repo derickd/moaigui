@@ -217,7 +217,17 @@ function _M.TextBox:removeLine(idx)
 
 	local text = self._lines[idx]:getText()
 	local f = self._fullText:find(text)
-	if (nil == f) then return end
+	if (nil == f) then 
+    self:_removeWidgetChild(self._lines[idx])
+
+    self._scrollBar:setTopItem(1) -- update scrollBar
+	  self._scrollBar:setNumItems(self._scrollBar:getNumItems() - 1)
+	  table.remove(self._lines, idx) -- remove empty line
+  	self:_displayLines()  -- To erase the old lines
+    
+    
+    return
+  end
 
 	self._fullText = self._fullText:sub(1, f - 1) .. self._fullText:sub(f + #text)
 

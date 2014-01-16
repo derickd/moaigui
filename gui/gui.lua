@@ -498,6 +498,16 @@ function _M.GUI:createWindow(...)
 end
 
 
+function _M.GUI:_removeWindow(w)
+  for k,v in pairs(self._windows) do
+    if (v == w) then
+      table.remove(self._windows, k)
+      break
+    end
+  end
+end
+
+
 function _M.GUI:createLineGraph(...)
 	local w = self._factory:create("line graph", ...)
 
