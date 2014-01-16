@@ -334,6 +334,8 @@ end
 function _M.AWindow:_removeWidgetChild(child)
 	for i, v in ipairs(self._widgetChildren) do
 		if (v == child) then
+      table.remove(self._widgetChildren, k)
+      self._gui:_removeWindow(v) -- Modification 2013/12/17
 			v:destroy()
 			break
 		end
@@ -424,7 +426,6 @@ function _M.AWindow:screenY()
 end
 
 function _M.AWindow:_onSetDim()
-
 end
 
 function _M.AWindow:_calcDim(width, height)
@@ -686,10 +687,12 @@ function _M.AWindow:destroy()
 	end
 
 	for i, v in ipairs(self._children) do
+    table.remove(self._children, i) -- Modification 2013/17/12
 		v:destroy()
 	end
 
 	for i, v in ipairs(self._widgetChildren) do
+    table.remove(self._widgetchildren, i) -- Modification 2013/17/12
 		v:destroy()
 	end
 
@@ -699,13 +702,25 @@ function _M.AWindow:destroy()
 		for i2, v2 in ipairs(v) do
 			v2:setTexture(nil)
 		end
+    table.remove(self._quads, k)
 	end
 
 	for k, v in pairs(self._props) do
 		for i2, v2 in ipairs(v) do
+      table.remove(v, i2)
 			self._gui:_unregisterHitObject(v2)
 			self._gui:_destroyProp(v2)
 		end
+    v = nil
+    table.remove(self._props, k)
+   	self._gui:_destroyProp(self._rootProp -- Modification 2013/17/12
+    -- 2013/17/12 Next lines are probably redundant --
+    self._text = nil
+    self._children = nil
+    self._widgetChildren = nil
+    self._quads = nil
+    self._props = nil
+    self = nil    
 	end
 end
 

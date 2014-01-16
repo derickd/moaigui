@@ -53,6 +53,11 @@ function _M.Text:_linkProp(parent, prop)
 	-- prop:setAttrLink(MOAIProp.ATTR_VISIBLE, parent, MOAIProp.ATTR_VISIBLE)
 end
 
+function _M.Text:_unlinkProp(prop) -- ADDED 2013/12/17
+  prop:clearAttrLink(MOAIProp.INHERIT_TRANSFORM)
+  -- or prop:clearNodeLink(parent) ???
+end
+
 function _M.Text:setString(s)
 	self._string = s
 	if (true == self._visible) then
@@ -160,6 +165,7 @@ function _M.Text:hide()
 end
 
 function _M.Text:destroy()
+  self:_unlinkProp(self._parent._rootProp) -- Modification 2013/12/17  
 	self._parent._gui:partition():removeProp(self._textBox)
 	self._parent._gui:_unregisterHitObject(self._textBox)
 end
